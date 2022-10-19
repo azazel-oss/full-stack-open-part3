@@ -31,6 +31,14 @@ app.get("/api/persons", (req, res) => {
   return res.json(persons);
 });
 
+app.get("/api/persons/:id", (req, res) => {
+  let person = persons.find((person) => person.id === +req.params.id);
+  if (person) return res.json(person);
+  return res
+    .status(404)
+    .json({ message: "Could not find the requested person" });
+});
+
 app.get("/info", (req, res) => {
   return res.send(
     `Phonebook has info for ${
