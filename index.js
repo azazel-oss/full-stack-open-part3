@@ -32,8 +32,20 @@ let persons = [
   },
 ];
 
+app.use(express.json());
+
 app.get("/api/persons", (req, res) => {
   return res.json(persons);
+});
+
+app.post("/api/persons", (req, res) => {
+  const { name, number } = req.body;
+  persons.push({
+    id: Math.ceil(Math.random() * 1000000),
+    name,
+    number,
+  });
+  return res.json({ message: "Person added successfully" });
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -51,7 +63,7 @@ app.delete("/api/persons/:id", (req, res) => {
     return res.json({ message: "Count not delete the requested person" });
   }
   persons = persons.filter((person) => person.id !== id);
-  return res.json({ message: "Person delete successfully" });
+  return res.json({ message: "Person deleted successfully" });
 });
 
 app.get("/info", (req, res) => {
