@@ -4,7 +4,7 @@ const app = express();
 
 const PORT = process.env.PORT || 3001;
 
-const persons = [
+let persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -25,6 +25,11 @@ const persons = [
     name: "Mary Poppendieck",
     number: "39-23-6423122",
   },
+  {
+    id: 5,
+    name: "Asad",
+    number: "12321312",
+  },
 ];
 
 app.get("/api/persons", (req, res) => {
@@ -37,6 +42,16 @@ app.get("/api/persons/:id", (req, res) => {
   return res
     .status(404)
     .json({ message: "Could not find the requested person" });
+});
+
+app.delete("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  let existingPersonIndex = persons.findIndex((person) => person.id === id);
+  if (existingPersonIndex === -1) {
+    return res.json({ message: "Count not delete the requested person" });
+  }
+  persons = persons.filter((person) => person.id !== id);
+  return res.json({ message: "Person delete successfully" });
 });
 
 app.get("/info", (req, res) => {
