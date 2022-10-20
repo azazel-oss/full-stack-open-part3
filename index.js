@@ -31,6 +31,7 @@ let persons = [
 
 app.use(cors());
 
+app.use(express.static("build"));
 app.use(express.json());
 
 logger.token("body", (req, res) => {
