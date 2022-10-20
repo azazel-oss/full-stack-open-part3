@@ -1,4 +1,5 @@
 const express = require("express");
+const logger = require("morgan");
 
 const app = express();
 
@@ -34,6 +35,7 @@ let persons = [
 
 app.use(express.json());
 
+app.use(logger("tiny"));
 app.get("/api/persons", (req, res) => {
   return res.json(persons);
 });
