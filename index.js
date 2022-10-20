@@ -1,5 +1,6 @@
 const express = require("express");
 const logger = require("morgan");
+const cors = require("cors");
 
 const app = express();
 
@@ -28,6 +29,8 @@ let persons = [
   },
 ];
 
+app.use(cors());
+
 app.use(express.json());
 
 logger.token("body", (req, res) => {
@@ -54,12 +57,13 @@ app.post("/api/persons", (req, res) => {
       .status(401)
       .json({ message: "This name already exists in the phonebook" });
   }
-  persons.push({
+  let newPerson = {
     id: Math.ceil(Math.random() * 1000000),
     name,
     number,
-  });
-  return res.json({ message: "Person added successfully" });
+  };
+  persons.push(newPerson);
+  return res.json(newPerson);
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -89,5 +93,5 @@ app.get("/info", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log("I am listening on port 3001");
+  console.log(`I am listening on port ${PORT}`);
 });
