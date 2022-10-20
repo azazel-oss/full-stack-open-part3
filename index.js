@@ -26,16 +26,18 @@ let persons = [
     name: "Mary Poppendieck",
     number: "39-23-6423122",
   },
-  {
-    id: 5,
-    name: "Asad",
-    number: "12321312",
-  },
 ];
 
 app.use(express.json());
 
-app.use(logger("tiny"));
+logger.token("body", (req, res) => {
+  if (req.method === "POST") return JSON.stringify(req.body);
+  return "";
+});
+
+app.use(
+  logger(":method :url :status :res[content-length] - :response-time ms :body")
+);
 app.get("/api/persons", (req, res) => {
   return res.json(persons);
 });
