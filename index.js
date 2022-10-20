@@ -40,6 +40,16 @@ app.get("/api/persons", (req, res) => {
 
 app.post("/api/persons", (req, res) => {
   const { name, number } = req.body;
+  if (!name || !number) {
+    return res.status(401).json({ message: "Both fields need to be filled" });
+  }
+  if (
+    persons.find((person) => person.name.toLowerCase() === name.toLowerCase())
+  ) {
+    return res
+      .status(401)
+      .json({ message: "This name already exists in the phonebook" });
+  }
   persons.push({
     id: Math.ceil(Math.random() * 1000000),
     name,
