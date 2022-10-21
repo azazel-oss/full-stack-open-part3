@@ -32,22 +32,29 @@ app.post("/api/persons", (req, res, next) => {
   if (!name || !number) {
     return res.status(401).json({ message: "Both fields need to be filled" });
   }
-  // if (
-  //   persons.find((person) => person.name.toLowerCase() === name.toLowerCase())
-  // ) {
-  //   return res
-  //     .status(401)
-  //     .json({ message: "This name already exists in the phonebook" });
-  // }
   let newPerson = new Person({
     name,
     number,
   });
-  // persons.push(newPerson);
   newPerson
     .save()
     .then((result) => res.json(result))
     .catch((err) => next(err));
+});
+
+app.put("/api/persons/:id", (req, res, next) => {
+  const id = req.params.id;
+  console.log(id);
+  console.log(req.body);
+  Person.findByIdAndUpdate(id, {
+    name: req.body.name,
+    number: req.body.number,
+  }).then((result) => {
+    console.log(result);
+    return res.json({
+      result,
+    });
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -63,11 +70,6 @@ app.delete("/api/persons/:id", (req, res, next) => {
   Person.findByIdAndDelete(id)
     .then((result) => res.json(result))
     .catch((err) => next(err));
-  // let existingPersonIndex = persons.findIndex((person) => person.id === id);
-  // if (existingPersonIndex === -1) {
-  //   return res.json({ message: "Count not delete the requested person" });
-  // }
-  // persons = persons.filter((person) => person.id !== id);
 });
 
 app.get("/info", (req, res, next) => {
