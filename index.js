@@ -30,20 +30,19 @@ app.post("/api/persons", (req, res) => {
   if (!name || !number) {
     return res.status(401).json({ message: "Both fields need to be filled" });
   }
-  if (
-    persons.find((person) => person.name.toLowerCase() === name.toLowerCase())
-  ) {
-    return res
-      .status(401)
-      .json({ message: "This name already exists in the phonebook" });
-  }
-  let newPerson = {
-    id: Math.ceil(Math.random() * 1000000),
+  // if (
+  //   persons.find((person) => person.name.toLowerCase() === name.toLowerCase())
+  // ) {
+  //   return res
+  //     .status(401)
+  //     .json({ message: "This name already exists in the phonebook" });
+  // }
+  let newPerson = new Person({
     name,
     number,
-  };
-  persons.push(newPerson);
-  return res.json(newPerson);
+  });
+  // persons.push(newPerson);
+  newPerson.save().then((result) => res.json(result));
 });
 
 app.get("/api/persons/:id", (req, res) => {
