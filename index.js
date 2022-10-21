@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.static("build"));
 app.use(express.json());
 
-logger.token("body", (req, res) => {
+logger.token("body", (req) => {
   if (req.method === "POST" || req.method === "PUT")
     return JSON.stringify(req.body);
   return "";
@@ -111,7 +111,7 @@ app.all("*", (req, res, next) => {
   next(new Error("Page not found"));
 });
 
-app.use((error, req, res, next) => {
+app.use((error, req, res) => {
   return res.json({ message: error.message });
 });
 
