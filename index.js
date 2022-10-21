@@ -57,12 +57,11 @@ app.put("/api/persons/:id", (req, res, next) => {
   });
 });
 
-app.get("/api/persons/:id", (req, res) => {
-  let person = persons.find((person) => person.id === +req.params.id);
-  if (person) return res.json(person);
-  return res
-    .status(404)
-    .json({ message: "Could not find the requested person" });
+app.get("/api/persons/:id", (req, res, next) => {
+  const id = req.params.id;
+  Person.findById(id)
+    .then((result) => res.json(result))
+    .catch(() => next(new Error("Could not find the requested person")));
 });
 
 app.delete("/api/persons/:id", (req, res, next) => {
