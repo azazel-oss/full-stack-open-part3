@@ -54,20 +54,22 @@ app.get("/api/persons/:id", (req, res) => {
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  let existingPersonIndex = persons.findIndex((person) => person.id === id);
-  if (existingPersonIndex === -1) {
-    return res.json({ message: "Count not delete the requested person" });
-  }
-  persons = persons.filter((person) => person.id !== id);
-  return res.json({ message: "Person deleted successfully" });
+  const id = req.params.id;
+  Person.findByIdAndDelete(id).then((result) => res.json(result));
+  // let existingPersonIndex = persons.findIndex((person) => person.id === id);
+  // if (existingPersonIndex === -1) {
+  //   return res.json({ message: "Count not delete the requested person" });
+  // }
+  // persons = persons.filter((person) => person.id !== id);
 });
 
 app.get("/info", (req, res) => {
-  return res.send(
-    `Phonebook has info for ${
-      persons.length
-    } people ${new Date().toUTCString()}`
+  Person.find({}).then((results) =>
+    res.json(
+      `Phonebook has info for ${
+        results.length
+      } people ${new Date().toUTCString()}`
+    )
   );
 });
 
