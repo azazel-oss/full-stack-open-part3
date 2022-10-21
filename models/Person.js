@@ -3,8 +3,15 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const personSchema = new Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minLength: 3,
+    required: true,
+  },
+  number: {
+    type: String,
+    required: true,
+  },
 });
 
 mongoose.connect(process.env.MONGODB_URI);

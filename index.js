@@ -14,7 +14,8 @@ app.use(express.static("build"));
 app.use(express.json());
 
 logger.token("body", (req, res) => {
-  if (req.method === "POST") return JSON.stringify(req.body);
+  if (req.method === "POST" || req.method === "PUT")
+    return JSON.stringify(req.body);
   return "";
 });
 
@@ -39,22 +40,40 @@ app.post("/api/persons", (req, res, next) => {
   newPerson
     .save()
     .then((result) => res.json(result))
-    .catch((err) => next(err));
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        res
+          .status(403)
+          .json({ message: "The name needs to be at least 3 letters long" });
+      }
+      next(err);
+    });
 });
 
 app.put("/api/persons/:id", (req, res, next) => {
   const id = req.params.id;
-  console.log(id);
-  console.log(req.body);
-  Person.findByIdAndUpdate(id, {
-    name: req.body.name,
-    number: req.body.number,
-  }).then((result) => {
-    console.log(result);
-    return res.json({
-      result,
+  Person.findByIdAndUpdate(
+    id,
+    {
+      name: req.body.name,
+      number: req.body.number,
+    },
+    { runValidators: true }
+  )
+    .then((result) => {
+      console.log(result);
+      return res.json({
+        result,
+      });
+    })
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return res
+          .status(403)
+          .json({ message: "Both fields need to be filled" });
+      }
+      return next(err);
     });
-  });
 });
 
 app.get("/api/persons/:id", (req, res, next) => {
