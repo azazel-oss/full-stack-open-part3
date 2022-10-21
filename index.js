@@ -41,10 +41,15 @@ app.post("/api/persons", (req, res, next) => {
     .save()
     .then((result) => res.json(result))
     .catch((err) => {
+      if (err.name === "MongoServerError") {
+        res.status(403).json({
+          message: "Name must be unique",
+        });
+      }
       if (err.name === "ValidationError") {
-        res
-          .status(403)
-          .json({ message: "The name needs to be at least 3 letters long" });
+        res.status(403).json({
+          message: err.message.split(": ")[err.message.split(": ").length - 1],
+        });
       }
       next(err);
     });
